@@ -3,10 +3,10 @@ ALL=grammar.js calc.js
 default: $(ALL)
 
 grammar.js: grammar.peg
-	pegjs -e Calc $< $@
+	pegjs -e JSUnitCalcParser $< $@
 
 calc.js: calc.coffee
-	coffee -cp $< > $@
+	coffee -cp $< > $@.tmp && mv -f $@.tmp $@ || (rm -f $@.tmp && false)
 
 clean:
 	rm -f $(ALL)

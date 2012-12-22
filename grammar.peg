@@ -1,28 +1,54 @@
-// math!
+// Math!
+{
+var calc = new JSUnitCalc;
+}
 
 start
-  = additive
+  = _ expr:additive __ "in"i __ unit:unit { return calc.convert(expr, unit); }
+  / _ expr:additive _ { return expr; }
 
 additive
-  = left:multiplicative "+" right:additive { return ['+', left, right]; }
-  / left:multiplicative "-" right:additive { return ['-', left, right]; }
+  = left:multiplicative _ "+" _ right:additive { return calc.add(left, right); }
+  / left:multiplicative _ "-" _ right:additive {
+      return calc.subtract(left, right);
+    }
   / multiplicative
 
 multiplicative
-  = left:primary "*" right:multiplicative { return ['*', left, right]; }
-  / left:primary "/" right:multiplicative { return ['/', left, right]; }
+  = left:powered _ "*" _ right:multiplicative {
+      return calc.multiply(left, right);
+    }
+  / left:powered _ "/" _ right:multiplicative {
+      return calc.divide(left, right);
+    }
+  / powered
+
+powered
+  = n:primary _ exp _ pow:powered { return calc.power(n, pow); }
   / primary
+
+exp "exponentiation"
+  = "^"
+  / "**"
 
 primary
   = number_with_unit
-  / "(" additive:additive ")" { return additive; }
+  / "(" _ additive:additive _ ")" { return additive; }
 
 number_with_unit
-  = num:number " "* unit:unit? { return [num, unit]; }
+  = num:number unit:unit { return new JSUnitCalcValue(num, unit); }
+  / number
 
 number "number"
-  = digits:[0-9.]+ { return parseFloat(digits.join("")); }
+  = num:([+-]? ([0-9]+ ("." [0-9]*)? / "." [0-9]+) ( "e"i [+-]? [0-9]+)?) {
+      return parseFloat(num.join(''));
+    }
 
 unit "unit"
   = "ms"
   / "kg"
+
+_ = __*
+
+__ "whitespace" = [' '\t\r\n]
+ 
