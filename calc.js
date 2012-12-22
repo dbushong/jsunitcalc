@@ -47,6 +47,18 @@
       return [res, unit];
     };
 
+    JSUnitCalc.prototype.multiplyUnits = function(left, right) {
+      return ['*u', left, right];
+    };
+
+    JSUnitCalc.prototype.divideUnits = function(left, right) {
+      return ['/u', left, right];
+    };
+
+    JSUnitCalc.prototype.powerUnits = function(left, right) {
+      return ['^u', left, right];
+    };
+
     return JSUnitCalc;
 
   })();

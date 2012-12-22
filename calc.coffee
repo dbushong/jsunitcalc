@@ -15,6 +15,12 @@ class window.JSUnitCalc
     [ '^', left, right ]
   convert: (res, unit) ->
     [ res, unit ]
+  multiplyUnits: (left, right) ->
+    [ '*u', left, right ]
+  divideUnits: (left, right) ->
+    [ '/u', left, right ]
+  powerUnits: (left, right) ->
+    [ '^u', left, right ]
 
 $(document).ready ->
   $('#expr').keydown ->
