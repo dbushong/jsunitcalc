@@ -4,12 +4,20 @@ function combine(first, rest) {
   var n = first;
   rest.forEach(function (expr) {
     var op = expr[1], val = expr[3];
-    n = n[{
-      '+': 'add',
-      '-': 'sub',
-      '*': 'mul',
-      '/': 'div'
-    }[op]](val.isUnitless() ? val.scalar : val);
+    if (val.isUnitless()) {
+      if (n.isUnitless()) {
+        switch (op) {
+          case '+': n = n.scalar + val.scalar; break;
+          case '-': n = n.scalar - val.scalar; break;
+          case '*': n = n.scalar * val.scalar; break;
+          case '/': n = n.scalar / val.scalar; break;
+        }
+        n = new Qty(n.toString());
+        return;
+      }
+      else val = val.scalar;
+    }
+    n = n[{'+': 'add', '-': 'sub', '*': 'mul', '/': 'div'}[op]](val);
   });
   return n;
 }
