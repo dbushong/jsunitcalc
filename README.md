@@ -1,5 +1,4 @@
 JSUnitCalc
 ----------
 
-A simple JavaScript calculator with unit conversions, basically the same
-as what Google implements, but running locally.
+A thin wrapper around JS Quantities for accepting arbitrary calculations

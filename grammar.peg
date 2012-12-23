@@ -1,32 +1,39 @@
-// Math!
 {
-var calc = new JSUnitCalc;
+
+function combine(first, rest) {
+  var n = first;
+  rest.forEach(function (expr) {
+    var op = expr[1], val = expr[3];
+    n = n[{
+      '+': 'add',
+      '-': 'sub',
+      '*': 'mul',
+      '/': 'div'
+    }[op]](val.isUnitless() ? val.scalar : val);
+  });
+  return n;
+}
+
 }
 
 start
-  = _ expr:additive __ 'in'i __ unit:unit_multiplicative {
-      return calc.convert(expr, unit);
-    }
-  / _ expr:additive _ { return expr; }
+  = _ qty:additive __ 'in'i __ unit:unit_multiplicative { return qty.to(unit); }
+  / _ qty:additive _ { return qty; }
 
 additive
-  = left:multiplicative _ '+' _ right:additive { return calc.add(left, right); }
-  / left:multiplicative _ '-' _ right:additive {
-      return calc.subtract(left, right);
+  = first:multiplicative rest:(_ [+-] _ multiplicative)+ {
+      return combine(first, rest);
     }
   / multiplicative
 
 multiplicative
-  = left:powered _ '*' _ right:multiplicative {
-      return calc.multiply(left, right);
-    }
-  / left:powered _ '/' _ right:multiplicative {
-      return calc.divide(left, right);
-    }
+  = first:powered rest:(_ [*/] _ powered)+ { return combine(first, rest); }
   / powered
 
 powered
-  = n:primary _ exp _ pow:powered { return calc.power(n, pow); }
+  = n:primary _ exp _ pow:powered {
+      throw 'FIXME: powers not supported yet';
+    }
   / primary
 
 exp 'exponentiation'
@@ -38,12 +45,12 @@ primary
   / '(' _ additive:additive _ ')' { return additive; }
 
 number_with_unit
-  = num:number unit:unit_multiplicative {return new JSUnitCalcValue(num, unit);}
-  / number
+  = num:number _ unit:unit_multiplicative { return new Qty(num + ' ' + unit); }
+  / num:number { return new Qty(num); }
 
 number 'number'
   = sign:sign? num:just_num exp:('e'i sign? digits)? {
-      return parseFloat(sign + num + (exp||[]).join(''));
+      return sign + num + (exp||[]).join('');
     }
 
 sign 'sign'
@@ -60,26 +67,20 @@ digits 'digits'
 maybe_digits
   = d:[0-9]* { return d.join(''); }
 
-unit 'unit'
-  = 'ms'
-  / 'kg'
-
 unit_multiplicative
-  = left:unit_powered _ '*' _ right:unit_multiplicative {
-      return calc.multiplyUnits(left, right);
-    }
-  / left:unit_powered _ '/' _ right:unit_multiplicative {
-      return calc.divideUnits(left, right);
-    }
+  = bits:(unit_powered _ '*' _ unit_multiplicative) { return bits.join(' '); }
+  / bits:(unit_powered _ '/' _ unit_multiplicative) { return bits.join(' '); }
   / unit_powered
 
 unit_powered
-  = u:unit_primary _ exp _ pow:number { return calc.powerUnits(u, pow); }
+  = bits:(unit_primary _ exp _ number) { return bits.join(' '); }
   / unit_primary
 
 unit_primary
   = unit
-  / '(' _ u:unit_multiplicative _ ')' { return u; }
+  / bits:('(' _ unit_multiplicative _ ')') { return bits.join(' '); }
+
+unit 'unit' = str:[a-z]i+ { return str.join(''); }
 
 _ = __*
 
