@@ -586,7 +586,9 @@ JSUnitCalcParser = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, num, unit) { return new Qty(num + ' ' + unit); })(pos0, result0[0], result0[2]);
+          result0 = (function(offset, num, unit) {
+              return new Qty(num + ' ' + unit);
+            })(pos0, result0[0], result0[2]);
         }
         if (result0 === null) {
           pos = pos0;
@@ -898,7 +900,7 @@ JSUnitCalcParser = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, bits) { return bits.join(' '); })(pos0, result0);
+          result0 = (function(offset, bits) { return bits.join(''); })(pos0, result0);
         }
         if (result0 === null) {
           pos = pos0;
@@ -946,7 +948,7 @@ JSUnitCalcParser = (function(){
             pos = pos1;
           }
           if (result0 !== null) {
-            result0 = (function(offset, bits) { return bits.join(' '); })(pos0, result0);
+            result0 = (function(offset, bits) { return bits.join(''); })(pos0, result0);
           }
           if (result0 === null) {
             pos = pos0;
@@ -996,7 +998,7 @@ JSUnitCalcParser = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, bits) { return bits.join(' '); })(pos0, result0);
+          result0 = (function(offset, bits) { return bits.join(''); })(pos0, result0);
         }
         if (result0 === null) {
           pos = pos0;

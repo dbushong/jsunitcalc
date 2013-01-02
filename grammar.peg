@@ -53,7 +53,9 @@ primary
   / '(' _ additive:additive _ ')' { return additive; }
 
 number_with_unit
-  = num:number _ unit:unit_multiplicative { return new Qty(num + ' ' + unit); }
+  = num:number _ unit:unit_multiplicative {
+      return new Qty(num + ' ' + unit);
+    }
   / num:number { return new Qty(num); }
 
 number 'number'
@@ -76,12 +78,12 @@ maybe_digits
   = d:[0-9]* { return d.join(''); }
 
 unit_multiplicative
-  = bits:(unit_powered _ '*' _ unit_multiplicative) { return bits.join(' '); }
-  / bits:(unit_powered _ '/' _ unit_multiplicative) { return bits.join(' '); }
+  = bits:(unit_powered _ '*' _ unit_multiplicative) { return bits.join(''); }
+  / bits:(unit_powered _ '/' _ unit_multiplicative) { return bits.join(''); }
   / unit_powered
 
 unit_powered
-  = bits:(unit_primary _ exp _ number) { return bits.join(' '); }
+  = bits:(unit_primary _ exp _ number) { return bits.join(''); }
   / unit_primary
 
 unit_primary

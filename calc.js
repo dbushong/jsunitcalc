@@ -2,17 +2,22 @@
 (function() {
 
   $(document).ready(function() {
-    return $('#expr').keydown(function() {
+    return $('#expr').focus().keydown(function() {
       var _this = this;
       return setTimeout((function() {
         var res;
+        if (!/\S/.test(_this.value)) {
+          $('#result,#debug,#error').text('');
+          return;
+        }
         try {
           res = JSUnitCalcParser.parse(_this.value);
-          $('#result').text(res + ' ' + JSON.stringify(res));
+          $('#result').text(res);
+          $('#debug').text(JSON.stringify(res));
           return $('#error').text('');
         } catch (e) {
           $('#error').text(e.toString());
-          return $('#result').text('');
+          return $('#result,#debug').text('');
         }
       }), 0);
     });
